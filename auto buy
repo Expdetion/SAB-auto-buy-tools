@@ -1,12 +1,12 @@
 -- Player reference
 local player = game.Players.LocalPlayer
 
--- ScreenGui setup
+-- ScreenGui
 local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
 gui.Name = "BuyScriptUI"
 gui.ResetOnSpawn = false
 
--- === MAIN BUY PANEL ===
+-- === BUY PANEL ===
 local frame = Instance.new("Frame", gui)
 frame.Size = UDim2.new(0, 240, 0, 140)
 frame.Position = UDim2.new(0.4, 0, 0.4, 0)
@@ -14,6 +14,7 @@ frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
 frame.BorderSizePixel = 0
 frame.Active = true
 frame.Draggable = true
+frame.Visible = false -- Start hidden
 frame.Name = "BuyPanel"
 
 -- BUY Button
@@ -27,63 +28,81 @@ buyButton.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
 buyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 buyButton.BorderSizePixel = 0
 
--- CLOSE Button
-local closeButton = Instance.new("TextButton", frame)
-closeButton.Size = UDim2.new(0, 24, 0, 24)
-closeButton.Position = UDim2.new(1, -28, 0, 4)
-closeButton.Text = "✕"
-closeButton.Font = Enum.Font.SourceSans
-closeButton.TextScaled = true
-closeButton.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
-closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-closeButton.BorderSizePixel = 0
-
--- === MINIMAL TOGGLE BUTTON ===
+-- === TOGGLE BUTTON (Draggable square) ===
 local toggleButton = Instance.new("TextButton", gui)
 toggleButton.Size = UDim2.new(0, 40, 0, 40)
 toggleButton.Position = UDim2.new(0, 10, 0, 10)
 toggleButton.BackgroundColor3 = Color3.fromRGB(70, 130, 180)
 toggleButton.BorderSizePixel = 0
-toggleButton.Text = ""  -- No text for minimal look
-toggleButton.Name = "ShowButton"
+toggleButton.Text = ""
+toggleButton.Name = "ToggleButton"
+toggleButton.Active = true
 
--- Optional: You could use an icon later (like an image button)
+-- Draggable toggle button logic
+local dragging = false
+local dragInput, dragStart, startPos
 
--- Show/Hide Logic
-closeButton.MouseButton1Click:Connect(function()
-    frame.Visible = false
+toggleButton.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = true
+		dragStart = input.Position
+		startPos = toggleButton.Position
+
+		input.Changed:Connect(function()
+			if input.UserInputState == Enum.UserInputState.End then
+				dragging = false
+			end
+		end)
+	end
 end)
 
+toggleButton.InputChanged:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseMovement then
+		dragInput = input
+	end
+end)
+
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+	if input == dragInput and dragging then
+		local delta = input.Position - dragStart
+		toggleButton.Position = UDim2.new(
+			startPos.X.Scale, startPos.X.Offset + delta.X,
+			startPos.Y.Scale, startPos.Y.Offset + delta.Y
+		)
+	end
+end)
+
+-- Toggle buy panel visibility
 toggleButton.MouseButton1Click:Connect(function()
-    frame.Visible = true
+	frame.Visible = not frame.Visible
 end)
 
--- BUY Logic with 1-second delay
+-- BUY Logic
 buyButton.MouseButton1Click:Connect(function()
-    local shop = game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("Net"):WaitForChild("RF/CoinsShopService/RequestBuy")
+	local shop = game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("Net"):WaitForChild("RF/CoinsShopService/RequestBuy")
 
-    coroutine.wrap(function()
-        local args = {"Invisibility Cloak"}
-        pcall(function() shop:InvokeServer(unpack(args)) end)
-        wait(1)
+	coroutine.wrap(function()
+		local args = {"Invisibility Cloak"}
+		pcall(function() shop:InvokeServer(unpack(args)) end)
+		wait(1)
 
-        args = {"Body Swap Potion"}
-        pcall(function() shop:InvokeServer(unpack(args)) end)
-        wait(1)
+		args = {"Body Swap Potion"}
+		pcall(function() shop:InvokeServer(unpack(args)) end)
+		wait(1)
 
-        args = {"All Seeing Sentry"}
-        pcall(function() shop:InvokeServer(unpack(args)) end)
-        wait(1)
+		args = {"All Seeing Sentry"}
+		pcall(function() shop:InvokeServer(unpack(args)) end)
+		wait(1)
 
-        args = {"Web Slinger"}
-        pcall(function() shop:InvokeServer(unpack(args)) end)
-        wait(1)
+		args = {"Web Slinger"}
+		pcall(function() shop:InvokeServer(unpack(args)) end)
+		wait(1)
 
-        args = {"Quantum Cloner"}
-        pcall(function() shop:InvokeServer(unpack(args)) end)
-        wait(1)
+		args = {"Quantum Cloner"}
+		pcall(function() shop:InvokeServer(unpack(args)) end)
+		wait(1)
 
-        args = {"Medusa's Head"}
-        pcall(function() shop:InvokeServer(unpack(args)) end)
-    end)()
+		args = {"Medusa's Head"}
+		pcall(function() shop:InvokeServer(unpack(args)) end)
+	end)()
 end)
