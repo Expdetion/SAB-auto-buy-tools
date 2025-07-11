@@ -49,28 +49,28 @@ buyButton.MouseButton1Click:Connect(function()
         wait(1)
 
         -- Buy Body Swap Potion
-        args = {"Body Swap Potion"}
+        args = {"Quantum Cloner"}
         pcall(function()
             shop:InvokeServer(unpack(args))
         end)
         wait(1)
 
         -- Buy All Seeing Sentry
-        args = {"All Seeing Sentry"}
-        pcall(function()
-            shop:InvokeServer(unpack(args))
-        end)
-        wait(1)
-
-        -- Buy Web Slinger
         args = {"Web Slinger"}
         pcall(function()
             shop:InvokeServer(unpack(args))
         end)
         wait(1)
 
+        -- Buy Web Slinger
+        args = {"Body Swap Potion"}
+        pcall(function()
+            shop:InvokeServer(unpack(args))
+        end)
+        wait(1)
+
         -- Buy Quantum Cloner
-        args = {"Quantum Cloner"}
+        args = {"All Seeing Sentry"}
         pcall(function()
             shop:InvokeServer(unpack(args))
         end)
