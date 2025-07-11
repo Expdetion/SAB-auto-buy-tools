@@ -1,0 +1,90 @@
+-- Executor UI with individual args tables per item
+local player = game.Players.LocalPlayer
+
+-- Create UI
+local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+gui.Name = "BuyScriptUI"
+gui.ResetOnSpawn = false
+
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0, 240, 0, 140)
+frame.Position = UDim2.new(0.4, 0, 0.4, 0)
+frame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+frame.BorderSizePixel = 0
+frame.Active = true
+frame.Draggable = true
+
+-- BUY Button
+local buyButton = Instance.new("TextButton", frame)
+buyButton.Size = UDim2.new(0.9, 0, 0.5, 0)
+buyButton.Position = UDim2.new(0.05, 0, 0.35, 0)
+buyButton.Text = "BUY"
+buyButton.Font = Enum.Font.SourceSansBold
+buyButton.TextScaled = true
+buyButton.BackgroundColor3 = Color3.fromRGB(0, 170, 0)
+buyButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+buyButton.BorderSizePixel = 0
+
+-- CLOSE Button
+local closeButton = Instance.new("TextButton", frame)
+closeButton.Size = UDim2.new(0, 24, 0, 24)
+closeButton.Position = UDim2.new(1, -28, 0, 4)
+closeButton.Text = "✕"
+closeButton.Font = Enum.Font.SourceSans
+closeButton.TextScaled = true
+closeButton.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeButton.BorderSizePixel = 0
+
+-- Button logic with exact args structure + delay
+buyButton.MouseButton1Click:Connect(function()
+    local shop = game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("Net"):WaitForChild("RF/CoinsShopService/RequestBuy")
+
+    coroutine.wrap(function()
+        -- Buy Invisibility Cloak
+        local args = {"Invisibility Cloak"}
+        pcall(function()
+            shop:InvokeServer(unpack(args))
+        end)
+        wait(1)
+
+        -- Buy Body Swap Potion
+        args = {"Body Swap Potion"}
+        pcall(function()
+            shop:InvokeServer(unpack(args))
+        end)
+        wait(1)
+
+        -- Buy All Seeing Sentry
+        args = {"All Seeing Sentry"}
+        pcall(function()
+            shop:InvokeServer(unpack(args))
+        end)
+        wait(1)
+
+        -- Buy Web Slinger
+        args = {"Web Slinger"}
+        pcall(function()
+            shop:InvokeServer(unpack(args))
+        end)
+        wait(1)
+
+        -- Buy Quantum Cloner
+        args = {"Quantum Cloner"}
+        pcall(function()
+            shop:InvokeServer(unpack(args))
+        end)
+        wait(1)
+
+        -- Buy Medusa's Head
+        args = {"Medusa's Head"}
+        pcall(function()
+            shop:InvokeServer(unpack(args))
+        end)
+    end)()
+end)
+
+-- Close/hide UI
+closeButton.MouseButton1Click:Connect(function()
+    gui:Destroy()
+end)
